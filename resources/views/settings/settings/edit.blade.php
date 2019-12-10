@@ -29,12 +29,18 @@
                 <div class="tab-content">
                     <div class="tab-pane tab-margin active" id="company">
                         {{ Form::textGroup('company_name', trans('settings.company.name'), 'id-card-o') }}
-
-                        {{ Form::textGroup('company_email', trans('settings.company.email'), 'envelope') }}
+                        
+                        {{ Form::textGroup('company_number', trans('general.company_number'), 'percent', []) }}
+                        {{ Form::textGroup('company_bank_iban', 'IBAN', 'bank', []) }}
 
                         {{ Form::textGroup('company_tax_number', trans('general.tax_number'), 'percent', []) }}
-
+                        {{ Form::textGroup('company_bank_bic',  'BIC' , 'bank', []) }}
+                        
+                        
+                            
+                        {{ Form::textGroup('company_email', trans('settings.company.email'), 'envelope') }}
                         {{ Form::textGroup('company_phone', trans('settings.company.phone'), 'phone', []) }}
+                        
 
                         {{ Form::textareaGroup('company_address', trans('settings.company.address')) }}
 

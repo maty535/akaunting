@@ -13,8 +13,14 @@
         <div class="text company">
             <strong>{{ setting('general.company_name') }}</strong><br>
             {!! nl2br(setting('general.company_address')) !!}<br>
+            <br/>
+                <strong>IBAN:</strong>{{ setting('general.company_bank_iban')}}
+            <br/>
+            
             @if (setting('general.company_tax_number'))
-                 <strong>{{ trans('general.tax_number') }}: </strong> {{ setting('general.company_tax_number') }}<br>
+                 <strong>{{ trans('general.tax_number') }}:</strong> {{ setting('general.company_tax_number') }}
+                 / 
+                 <strong>{{ trans('general.company_number') }}:</strong> {{ setting('general.company_number') }}<br>
             @endif
             <br>
             @if (setting('general.company_phone'))
@@ -49,9 +55,10 @@
             @stack('company_number_input_end')
 
             <br>         
+            <strong>kontakt:</strong>
             @stack('phone_input_start')
             @if ($invoice->customer_phone)
-                <strong>kontakt:</strong> {{ $invoice->customer_phone }},
+                 {{ $invoice->customer_phone }},
             @endif
             @stack('phone_input_end')
             @stack('email_start')

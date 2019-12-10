@@ -119,13 +119,19 @@
                     <address>
                         <strong>{{ setting('general.company_name') }}</strong><br>
                         {!! nl2br(setting('general.company_address')) !!}<br>
+                        <br/>
+                        <strong>IBAN:</strong>{{ setting('general.company_bank_iban')}},
+                        <strong>BIC:</strong>{{ setting('general.company_bank_bic')}}<br/>
                         
                         @if (setting('general.company_tax_number'))
-                        {{ trans('general.tax_number') }}: {{ setting('general.company_tax_number') }}<br>
+                        <strong>{{ trans('general.tax_number') }}:</strong> {{ setting('general.company_tax_number') }}
+                        / 
+                        <strong>{{ trans('general.company_number') }}:</strong> {{ setting('general.company_number') }}<br>
                         @endif
                         <br>
+                        <strong>kontakt:</strong>
                         @if (setting('general.company_phone'))
-                        {{ setting('general.company_phone') }}<br>
+                        {{ setting('general.company_phone') }},
                         @endif
                         {{ setting('general.company_email') }}
                     </address>
@@ -155,9 +161,10 @@
                         @endif
                         @stack('tax_number_input_end')
                         <br>
+                        <strong>kontakt:</strong>
                         @stack('phone_input_start')
                         @if ($invoice->customer_phone)
-                        {{ $invoice->customer_phone }}<br>
+                        {{ $invoice->customer_phone }}, 
                         @endif
                         @stack('phone_input_end')
                         @stack('email_start')
