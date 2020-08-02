@@ -122,7 +122,11 @@
             @stack('quantity_th_start')
             <th class="quantity">{{ trans($text_override['quantity']) }}</th>
             @stack('quantity_th_end')
-           
+
+            @stack('unit_th_start')
+            <th class="unit">{{ trans($text_override['unit']) }}</th>
+            @stack('unit_th_end')
+
             @stack('price_th_start')
             <th class="price">{{ trans($text_override['price']) }}</th>
             @stack('price_th_end')
@@ -162,6 +166,11 @@
             @stack('quantity_td_start')
             <td class="quantity">{{ $item->quantity }}</td>
             @stack('quantity_td_end')
+
+            @stack('unit_th_start')
+            <th class="unit">{{ trans($text_override['unit']) }}</th>
+            @stack('unit_th_end')
+
             @stack('price_td_start')
             <td class="price">@moneyExt($item->price, $invoice->currency_code,true, 4)</td>
             @stack('price_td_end')
