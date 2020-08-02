@@ -47,14 +47,21 @@
                             @stack('name_th_start')
                             <th width="40%" class="text-left">{{ trans('general.name') }}</th>
                             @stack('name_th_end')
+                           
                             @stack('quantity_th_start')
                             <th width="5%" class="text-center">{{ trans($text_override['quantity']) }}</th>
                             @stack('quantity_th_end')
+                           
+                            @stack('unit_th_start')
+                            <th width="5%"
+                            class="text-center">{{trans('settings.invoice.unit')}}</th>
+                            @stack('unit_th_end')
+                           
                             @stack('price_th_start')
                             <th width="10%" class="text-right">{{ trans($text_override['price']) }}</th>
                             @stack('price_th_end')
                             @stack('taxes_th_start')
-                            <th width="15%" class="text-right">{{ trans_choice('general.taxes', 1) }}</th>
+                            <th width="10%" class="text-right">{{ trans_choice('general.taxes', 1) }}</th>
                             @stack('taxes_th_end')
                             @stack('total_th_start')
                             <th width="10%" class="text-right">{{ trans('invoices.total') }}</th>

@@ -261,7 +261,7 @@
                                 </td>
                                 @stack('name_td_end')
                                 @stack('quantity_td_start')
-                                <td class="text-center">{{ $item->quantity }}</td>
+                                <td class="text-center">{{ $item->quantity }} {{ $item->unit }}</td>
                                 @stack('quantity_td_end')
                                 
                                 @stack('price_td_start')

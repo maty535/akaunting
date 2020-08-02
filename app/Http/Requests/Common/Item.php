@@ -39,6 +39,7 @@ class Item extends Request
             'sale_price' => 'required',
             'purchase_price' => 'required',
             'quantity' => 'required|integer',
+            'unit' => 'nullable|string',       
             'tax_id' => 'nullable|integer',
             'category_id' => 'nullable|integer',
             'enabled' => 'integer|boolean',

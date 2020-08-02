@@ -98,6 +98,16 @@ class Item extends Model
     {
         return $this->id;
     }
+    /**
+     * Get the item unit.
+     *
+     * @return string
+     */
+    public function getItemUnitAttribute()
+    {
+        return $this->unit;
+    }
+    
 
     /**
      * Scope autocomplete.

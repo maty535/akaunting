@@ -173,6 +173,7 @@ class CreateInvoiceItem
             'name' => str_limit($this->data['name'], 180, ''),
             'sku' => $item_sku,
             'quantity' => (double) $this->data['quantity'],
+            'unit'     => $this->data['unit'], 
             'price' => (double) $this->data['price'],
             'tax' => $item_tax_total,
             'total' => $item_amount,

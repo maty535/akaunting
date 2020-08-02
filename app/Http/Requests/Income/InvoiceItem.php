@@ -27,6 +27,7 @@ class InvoiceItem extends Request
             'invoice_id' => 'required|integer',
             'name' => 'required|string',
             'quantity' => 'required|integer',
+            'unit' => 'nullable|string',
             'price' => 'required',
             'total' => 'required',
             'tax' => 'required',

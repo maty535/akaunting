@@ -119,6 +119,7 @@ class Invoices extends ApiController
                 $invoice_item['name'] = str_limit($item['name'], 180, '');
                 $invoice_item['sku'] = $item_sku;
                 $invoice_item['quantity'] = $item['quantity'];
+                $invoice_item['unit'] = $item['unit'];
                 $invoice_item['price'] = $item['price'];
                 $invoice_item['tax'] = $tax;
                 $invoice_item['tax_id'] = $tax_id;
