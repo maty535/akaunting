@@ -265,7 +265,8 @@
                                 @stack('quantity_td_end')
                                 
                                 @stack('price_td_start')
-                                <td class="text-right">@money($item->price, $invoice->currency_code, true)</td>
+                                <td
+                                class="text-right">@moneyExt($item->price, $invoice->currency_code, true, 4)</td>
                                 @stack('price_td_end')
                                 
                                 @stack('total_td_start')
@@ -336,7 +337,7 @@
                     <p class="lead">{{ trans_choice('general.notes', 2) }}</p>
 
                     <p class="text-muted well well-sm no-shadow" style="margin-top: 10px;">
-                        {{ $invoice->notes }}
+                        {!! html_entity_decode($invoice->notes) !!}
                     </p>
                 @endif
                 @stack('notes_input_end')

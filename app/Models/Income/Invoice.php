@@ -284,7 +284,7 @@ class Invoice extends Model
  
     public function getPayBySquareAttribute(){
         $qrData = '';
-        if (empty($this->amount)) {
+        if (empty($this->amount) || ($this->amount == 0) ) {
             return $qrData;
         }
 

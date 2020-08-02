@@ -64,12 +64,19 @@
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-right">
                                     <li><a href="{{ url('incomes/invoices/' . $item->id. '/email') }}">{{ trans('invoices.send_mail') }}</a></li> 
-                                   <li><a href="{{ url('incomes/invoices/' . $item->id.'/pdf') }}">{{ trans('invoices.download_pdf') }}</a></li> 
+                                    <li><a href="{{ url('incomes/invoices/' . $item->id.'/pdf') }}">{{ trans('invoices.download_pdf') }}</a></li> 
                                     <li class="divider"></li>                                
                                     <li><a href="{{ url('incomes/invoices/' . $item->id) }}">{{ trans('general.show') }}</a></li>
                                     @if (!$item->reconciled)
                                     <li><a href="{{ url('incomes/invoices/' . $item->id . '/edit') }}">{{ trans('general.edit') }}</a></li>
                                     @endif
+                                    
+                                    @if($item->status->code != 'paid')
+                                    @permission('update-incomes-invoices')
+                                    <li><a href="{{ url('incomes/invoices/' . $item->id . '/pay') }}">{{ trans('invoices.mark_paid') }}</a></li>
+                                    @endpermission
+                                    @endif
+                                    
                                     @permission('create-incomes-invoices')
                                     <li class="divider"></li>
                                     <li><a href="{{ url('incomes/invoices/' . $item->id . '/duplicate') }}">{{ trans('general.duplicate') }}</a></li>

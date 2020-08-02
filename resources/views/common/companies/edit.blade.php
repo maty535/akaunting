@@ -15,13 +15,20 @@
 
             <div class="box-body">
                 {{ Form::textGroup('company_name', trans('general.name'), 'id-card-o') }}
-
-                {{ Form::textGroup('domain', trans('companies.domain'), 'globe') }}
-
-                {{ Form::emailGroup('company_email', trans('general.email'), 'envelope') }}
-
                 {{ Form::selectGroup('default_currency', trans_choice('general.currencies', 1), 'money', $currencies) }}
 
+                {{ Form::textGroup('company_number', trans('general.company_number'), 'percent', []) }}
+                {{ Form::textGroup('company_tax_number', trans('general.tax_number'), 'percent', []) }}
+                
+                {{ Form::textGroup('company_bank_iban', 'IBAN', 'bank', []) }}
+                {{ Form::textGroup('company_bank_bic',  'BIC' , 'bank', []) }}
+                
+
+                {{ Form::textGroup('domain', trans('companies.domain'),      'globe') }}
+                {{ Form::emailGroup('company_email', trans('general.email'), 'envelope') }}
+                {{ Form::textGroup('company_phone', trans('general.phone'),  'phone') }}
+
+                
                 {{ Form::textareaGroup('company_address', trans('general.address')) }}
 
                 {{ Form::fileGroup('company_logo', trans('companies.logo')) }}

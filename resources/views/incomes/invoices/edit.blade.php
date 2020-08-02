@@ -167,7 +167,7 @@
             $('.input-price').maskMoney({
                 thousands : '{{ $currency->thousands_separator }}',
                 decimal : '{{ $currency->decimal_mark }}',
-                precision : {{ $currency->precision }},
+                precision : 4,
                 allowZero : true,
                 @if($currency->symbol_first)
                 prefix : '{{ $currency->symbol }}'
@@ -335,7 +335,7 @@
                         $('#item-price-' + item_row).maskMoney({
                             thousands : currency.thousands_separator,
                             decimal : currency.decimal_mark,
-                            precision : currency.precision,
+                            precision : 6,
                             allowZero : true,
                             prefix : (currency.symbol_first) ? currency.symbol : '',
                             suffix : (currency.symbol_first) ? '' : currency.symbol
@@ -477,7 +477,7 @@
                         $(this).maskMoney({
                             thousands : data.thousands_separator,
                             decimal : data.decimal_mark,
-                            precision : data.precision,
+                            precision : 4,
                             allowZero : true,
                             prefix : (data.symbol_first) ? data.symbol : '',
                             suffix : (data.symbol_first) ? '' : data.symbol
@@ -542,7 +542,7 @@
                             $(this).maskMoney({
                                 thousands : data.thousands_separator,
                                 decimal : data.decimal_mark,
-                                precision : data.precision,
+                                precision : 6,
                                 allowZero : true,
                                 prefix : (data.symbol_first) ? data.symbol : '',
                                 suffix : (data.symbol_first) ? '' : data.symbol

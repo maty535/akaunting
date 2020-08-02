@@ -15,8 +15,13 @@ class Company extends TransformerAbstract
     {
         return [
             'id' => $model->id,
-            'name' => $model->company_name,
+            'name'  => $model->company_name,
             'email' => $model->company_email,
+            'phone' => $model->company_phone,
+    	    'iban'  => $model->company_bank_iban,
+    	    'bic'   => $model->company_bank_bic,
+    	    'number' => $model->company_number,
+    	    'tax_number' => $model->company_tax_number,
             'domain' => $model->domain,
             'address' => $model->company_address,
             'logo' => $model->company_logo,

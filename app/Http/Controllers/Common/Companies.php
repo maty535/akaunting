@@ -70,6 +70,15 @@ class Companies extends Controller
         setting()->set('general.company_name', $request->get('company_name'));
         setting()->set('general.company_email', $request->get('company_email'));
         setting()->set('general.company_address', $request->get('company_address'));
+        
+        setting()->set('general.company_phone', $request->get('company_phone'));
+	setting()->set('general.company_number', $request->get('company_number'));
+	setting()->set('general.company_tax_number', $request->get('company_tax_number'));
+
+        setting()->set('general.company_bank_iban', $request->get('company_bank_iban'));
+        setting()->set('general.company_bank_bic', $request->get('company_bank_bic'));
+       
+        
 
         if ($request->file('company_logo')) {
             $company_logo = $this->getMedia($request->file('company_logo'), 'settings', $company->id);

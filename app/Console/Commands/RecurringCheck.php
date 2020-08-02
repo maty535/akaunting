@@ -66,15 +66,16 @@ class RecurringCheck extends Command
             foreach ($company->recurring as $recurring) {
                 foreach ($recurring->schedule() as $recur) {
                     $recur_date = Date::parse($recur->getStart()->format('Y-m-d'));
-
+                    $model = $recurring->recurable;
+                    //echo "Checking recurring: ".$recurring->id.", inv-id:".$model->id." customer:".$model->customer_name."\n"; 
                     // Check if should recur today
                     if ($this->today->ne($recur_date)) {
+                        //echo "Recur_date: .".$recur_date.", scheduled date:".$this->today->format('Y-m-d')."\n";
+                        //echo "Skip recurring:".$recurring->id."\n";
                         continue;
                     }
 
-                    $model = $recurring->recurable;
-
-                    if (!$model) {
+                    if (!$model){
                         continue;
                     }
 
@@ -83,6 +84,7 @@ class RecurringCheck extends Command
                             $this->recurBill($company, $model);
                             break;
                         case 'App\Models\Income\Invoice':
+                            echo "Generate new invoice for recurring: ".$model->id." customer:".$model->customer_name."\n"; 
                             $this->recurInvoice($company, $model);
                             break;
                         case 'App\Models\Expense\Payment':
@@ -120,10 +122,11 @@ class RecurringCheck extends Command
         $diff_days = Date::parse($clone->due_at)->diffInDays(Date::parse($clone->invoiced_at));
 
         // Update dates
-        $clone->invoiced_at = $this->today->format('Y-m-d');
+        $clone->invoiced_at  = $this->today->format('Y-m-d');
         $clone->delivered_at = $this->today->format('Y-m-d');
+        $due_at = clone $this->today;
         
-        $clone->due_at = $this->today->addDays($diff_days)->format('Y-m-d');
+        $clone->due_at = $due_at->addDays($diff_days)->format('Y-m-d');
         $clone->save();
 
         // Add invoice history

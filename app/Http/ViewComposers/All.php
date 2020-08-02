@@ -18,9 +18,9 @@ class All
     public function compose(View $view)
     {
         // Make sure it's installed
-        if (!env('APP_INSTALLED') && (env('APP_ENV') !== 'testing')) {
-            return;
-        }
+        //if (!env('APP_INSTALLED') && (env('APP_ENV') !== 'testing')) {
+        //    return;
+        //}
 
         // Share user logged in
         $auth_user = auth()->user();

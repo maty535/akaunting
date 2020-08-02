@@ -19,6 +19,8 @@
             
             @if (setting('general.company_tax_number'))
                  <strong>{{ trans('general.tax_number') }}:</strong> {{ setting('general.company_tax_number') }}
+            @endif
+            @if (setting('general.company_number'))
                  / 
                  <strong>{{ trans('general.company_number') }}:</strong> {{ setting('general.company_number') }}<br>
             @endif
@@ -44,13 +46,13 @@
             <br>
             @stack('tax_number_input_start')
             @if ($invoice->customer_tax_number)
-                 <strong>{{ trans('general.tax_number') }}: </strong> {{ $invoice->customer_tax_number }} /  
+                 <strong>{{ trans('general.tax_number') }}: </strong> {{ $invoice->customer_tax_number }}
             @endif
             @stack('tax_number_input_end')
 
             @stack('company_number_input_start')
             @if ($invoice->customer_company_number)
-                 <strong>{{ trans('general.company_number') }}: </strong> {{ $invoice->customer_company_number}}  
+                  /  <strong>{{ trans('general.company_number') }}: </strong> {{ $invoice->customer_company_number}}  
             @endif
             @stack('company_number_input_end')
 
@@ -161,7 +163,7 @@
             <td class="quantity">{{ $item->quantity }}</td>
             @stack('quantity_td_end')
             @stack('price_td_start')
-            <td class="price">@money($item->price, $invoice->currency_code, true)</td>
+            <td class="price">@moneyExt($item->price, $invoice->currency_code,true, 4)</td>
             @stack('price_td_end')
             
             @stack('total_td_start')
@@ -194,7 +196,7 @@
                     @stack($total->code . '_td_start')
                     <tr>
                         <th>{{ trans($total->title) }}:</th>
-                        <td class="text-right">@money($total->amount, $invoice->currency_code, true)</td>
+                        <td class="text-right">@money($total->amount, $invoice->currency_code,true,2)</td>
                     </tr>
                     @stack($total->code . '_td_end')
                 @else
@@ -223,13 +225,15 @@
             @if ($invoice->notes)
             <table class="text" style="page-break-inside: avoid;">
                 <tr><th>{{ trans_choice('general.notes', 2) }}</th></tr>
-                <tr><td>&nbsp;&nbsp;{{ $invoice->notes}}</p></td></tr>
+                <tr><td>{!! html_entity_decode($invoice->notes) !!}</td></tr>
             </table>
             @endif
             @stack('notes_input_end')
     </div>
 </div>
 
+
+@if ($total->amount > 0)
 <div class="row">
     <div class="col-100">
             @stack('signature_input_start')
@@ -246,4 +250,5 @@
             @stack('signature_input_end')
     </div>
 </div>
+@endif
 @endsection

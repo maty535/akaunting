@@ -62,7 +62,7 @@ return [
     ],
 
     'notification' => [
-        'message'       => 'Týmto si Vás dovoľujeme informovať o vystavenej faktúre pre Vašu firmu: ":customer" vo výške :amount.',
+        'message'       => 'Týmto si Vás dovoľujeme informovať o vystavenej faktúre pre firmu: ":customer" vo výške :amount.',
         'button'        => 'Zaplatiť teraz',
     ],
 
