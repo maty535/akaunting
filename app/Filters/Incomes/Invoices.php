@@ -42,4 +42,13 @@ class Invoices extends ModelFilter
 
         return $this->whereBetween('invoiced_at', $dates);
     }
+    
+    public function deliveredAt($date)
+    {
+        $dates = explode('_', $date);
+        $dates[0] .= ' 00:00:00';
+        $dates[1] .= ' 23:59:59';
+
+        return $this->whereBetween('delivered_at', $dates);
+    }
 }

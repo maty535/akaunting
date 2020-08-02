@@ -164,7 +164,11 @@
             @stack('quantity_td_end')
 
             @stack('price_td_start')
-            <td class="price">@moneyExt($item->price, $invoice->currency_code,true, 4)</td>
+            <td class="text-right"> &euro;{{ floatval($item->price)}}
+            @if ($item->unit)/{{ $item->unit }}
+            @endif    
+            </td>
+
             @stack('price_td_end')
             
             @stack('total_td_start')
