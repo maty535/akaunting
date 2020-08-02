@@ -12,6 +12,7 @@ use App\Traits\Recurring;
 use Bkwld\Cloner\Cloneable;
 use Sofa\Eloquence\Eloquence;
 use Date;
+use Illuminate\Support\Facades\Log;
 
 class Invoice extends Model
 {
@@ -24,23 +25,23 @@ class Invoice extends Model
      *
      * @var array
      */
-    protected $appends = ['attachment', 'discount', 'paid'];
+    protected $appends = ['attachment', 'amount_without_tax', 'discount', 'paid'];
 
-    protected $dates = ['deleted_at', 'invoiced_at', 'due_at'];
+    protected $dates = ['deleted_at', 'invoiced_at', 'due_at','delivered_at'];
 
     /**
      * Attributes that should be mass-assignable.
      *
      * @var array
      */
-    protected $fillable = ['company_id', 'invoice_number', 'order_number', 'invoice_status_code', 'invoiced_at', 'due_at', 'amount', 'currency_code', 'currency_rate', 'customer_id', 'customer_name', 'customer_email', 'customer_tax_number', 'customer_phone', 'customer_address', 'notes', 'category_id', 'parent_id'];
+    protected $fillable = [ 'company_id', 'invoice_number', 'order_number', 'invoice_status_code', 'delivered_at', 'invoiced_at', 'due_at','amount', 'currency_code', 'currency_rate','customer_id', 'customer_name', 'customer_email', 'customer_company_number', 'customer_tax_number', 'customer_phone', 'customer_address', 'notes', 'category_id','parent_id'];
 
     /**
      * Sortable columns.
      *
      * @var array
      */
-    public $sortable = ['invoice_number', 'customer_name', 'amount', 'status' , 'invoiced_at', 'due_at', 'invoice_status_code'];
+    public $sortable = ['invoice_number', 'customer_name', 'amount', 'status' , 'invoiced_at', 'due_at', 'delivered_at', 'invoice_status_code'];
 
     /**
      * Searchable rules.
@@ -86,7 +87,7 @@ class Invoice extends Model
         return $this->hasMany('App\Models\Income\InvoiceItem');
     }
 
-    public function itemTaxes()
+    public function item_taxes()
     {
         return $this->hasMany('App\Models\Income\InvoiceItemTax');
     }
@@ -118,7 +119,12 @@ class Invoice extends Model
 
     public function scopeDue($query, $date)
     {
-        return $query->where('due_at', '=', $date);
+        return $query->whereDate('due_at', '=', $date);
+    }
+
+    public function scopeDelivered($query, $date)
+    {
+        return $query->where('delivered_at', '=', $date);
     }
 
     public function scopeLatest($query)
@@ -206,6 +212,22 @@ class Invoice extends Model
     }
 
     /**
+     * Get the amount without tax.
+     *
+     * @return string
+     */
+    public function getAmountWithoutTaxAttribute()
+    {
+        $amount = $this->amount;
+
+        $this->totals()->where('code', 'tax')->each(function ($tax) use(&$amount) {
+            $amount -= $tax->amount;
+        });
+
+        return $amount;
+    }
+
+    /**
      * Get the paid amount.
      *
      * @return string
@@ -259,4 +281,81 @@ class Invoice extends Model
 
         return $paid;
     }
+ 
+    public function getPayBySquareAttribute(){
+        $qrData = '';
+        if (empty($this->amount)) {
+            return $qrData;
+        }
+
+        $xmlReqFmt = '<BySquareXmlDocuments xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                    <Username>matus.ivanecky@gmail.com</Username>
+                    <Password>g3n3r4t0rQR</Password>
+                    <Documents>
+                    <Pay xsi:type="Pay" xmlns="http://www.bysquare.com/bysquare">
+                    <Payments>
+                        <Payment>
+                        <BankAccounts>
+                            <BankAccount>
+                            <IBAN>SK3183300000002800495653</IBAN>
+                            </BankAccount>
+                        </BankAccounts>
+                        <VariableSymbol>%s</VariableSymbol>
+                        <Amount>%.2f</Amount>
+                        <CurrencyCode>EUR</CurrencyCode>
+                        <PaymentNote>platba faktury %s, %s </PaymentNote>
+                        <BeneficiaryName>%s</BeneficiaryName>
+                        <PaymentOptions>paymentorder</PaymentOptions>
+                        </Payment>
+                    </Payments>
+                    </Pay>
+                    </Documents>
+                    </BySquareXmlDocuments>';
+
+        $invoiceid = explode("-",$this->invoice_number)[1];
+        $xmlReq    = sprintf($xmlReqFmt, $invoiceid,
+                                         $this->amount,
+                                         //Date::parse($this->due_date)->format('Y-m-d'),
+                                         $this->invoice_number,
+                                         $this->customer_name,
+                                         $this->customer_name);
+
+        //Log::info($xmlReq);
+        $apiUrl ="https://app.bysquare.com/api/generateQR";
+
+        // create a new cURL resource
+        $hCurl = curl_init();
+        // set URL and other appropriate options
+        curl_setopt($hCurl, CURLOPT_URL, $apiUrl );
+        curl_setopt($hCurl, CURLOPT_HEADER, 0);
+        curl_setopt($hCurl, CURLOPT_HTTPHEADER, array(
+            'Accept: application/xml',
+            'Content-Type: application/xml'
+        ));
+        curl_setopt($hCurl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($hCurl, CURLOPT_TIMEOUT, 60);
+        curl_setopt($hCurl, CURLOPT_POSTFIELDS, $xmlReq);
+        curl_setopt($hCurl, CURLOPT_SSL_VERIFYPEER, false);
+
+        $xmlResponse = curl_exec($hCurl);
+        
+        //Log::debug($xmlResponse);
+        $aCurlInfo = curl_getinfo($hCurl);
+        $iError = curl_errno($hCurl);
+        if($iError !=0)
+        {   $sError = curl_error($hCurl);
+            Log::warning($sError);
+        }
+        else{
+            $simpleXml = simplexml_load_string($xmlResponse);
+            $qrData = $simpleXml->PayBySquare;
+        }
+        curl_close($hCurl);
+
+        return $qrData; 
+        
+    }
+ 
+    
 }

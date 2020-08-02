@@ -8,18 +8,20 @@
         {!! Form::model($invoice, ['method' => 'PATCH', 'files' => true, 'url' => ['incomes/invoices', $invoice->id], 'role' => 'form', 'class' => 'form-loading-button']) !!}
 
         <div class="box-body">
+            {{ Form::textGroup('invoice_number', trans('invoices.invoice_number'), 'file-text-o') }}
+            {{ Form::textGroup('order_number', trans('invoices.order_number'), 'shopping-cart',[]) }}
+                        
             {{ Form::selectGroup('customer_id', trans_choice('general.customers', 1), 'user', $customers, config('general.customers')) }}
-
             {{ Form::selectGroup('currency_code', trans_choice('general.currencies', 1), 'exchange', $currencies) }}
-
+                        
+            
             {{ Form::textGroup('invoiced_at', trans('invoices.invoice_date'), 'calendar', ['id' => 'invoiced_at', 'class' => 'form-control', 'required' => 'required', 'data-inputmask' => '\'alias\': \'yyyy-mm-dd\'', 'data-mask' => '', 'autocomplete' => 'off'], Date::parse($invoice->invoiced_at)->toDateString()) }}
 
             {{ Form::textGroup('due_at', trans('invoices.due_date'), 'calendar', ['id' => 'due_at', 'class' => 'form-control', 'required' => 'required', 'data-inputmask' => '\'alias\': \'yyyy-mm-dd\'', 'data-mask' => '', 'autocomplete' => 'off'], Date::parse($invoice->due_at)->toDateString()) }}
 
-            {{ Form::textGroup('invoice_number', trans('invoices.invoice_number'), 'file-text-o') }}
-
-            {{ Form::textGroup('order_number', trans('invoices.order_number'), 'shopping-cart',[]) }}
-
+            {{ Form::textGroup('delivered_at', 
+                                         trans('invoices.delivered_date'),'calendar',['id' =>'delivered_at', 'class' => 'form-control', 'required' => 'required','data-inputmask' => '\'alias\': \'yyyy-mm-dd\'','data-mask' => '', 'autocomplete' => 'off'], Date::parse($invoice->delivered_at)->toDateString()) }}
+            
             <div class="form-group col-md-12">
                 {!! Form::label('items', trans_choice($text_override['items'], 2), ['class' => 'control-label']) !!}
                 <div class="table-responsive">
@@ -117,6 +119,8 @@
             {{ Form::hidden('customer_name', old('customer_name', null), ['id' => 'customer_name']) }}
             {{ Form::hidden('customer_email', old('customer_email', null), ['id' => 'customer_email']) }}
             {{ Form::hidden('customer_tax_number', old('customer_tax_number', null), ['id' => 'customer_tax_number']) }}
+            {{ Form::hidden('customer_company_number', old('customer_company_number', null), ['id' =>'customer_company_number']) }}
+            
             {{ Form::hidden('customer_phone', old('customer_phone', null), ['id' => 'customer_phone']) }}
             {{ Form::hidden('customer_address', old('customer_address', null), ['id' => 'customer_address']) }}
             {{ Form::hidden('currency_rate', old('currency_rate', null), ['id' => 'currency_rate']) }}
@@ -184,6 +188,14 @@
                 autoclose: true,
                 language: '{{ language()->getShortCode() }}'
             });
+            //Date picker
+            $('#delivered_at').datepicker({
+                format: 'yyyy-mm-dd',
+                todayBtn: 'linked',
+                weekStart: 1,
+                autoclose: true,
+                language: '{{ language()->getShortCode() }}'
+            });
 
             //Date picker
             $('#due_at').datepicker({
@@ -204,7 +216,7 @@
                 },
                 language: {
                     noResults: function () {
-                        return '<span id="tax-add-new"><i class="fa fa-plus"> {{ trans('general.title.new', ['type' => trans_choice('general.tax_rates', 1)]) }}</span>';
+                        return '<span id="tax-add-new"><i class="fa fa-plus"></i> {{ trans('general.title.new', ['type' => trans_choice('general.tax_rates', 1)]) }}</span>';
                     }
                 }
             });
@@ -221,31 +233,60 @@
                 placeholder: "{{ trans('general.form.select.field', ['field' => trans_choice('general.categories', 1)]) }}"
             });
 
+            // Discount popover
+            $('a[rel=popover]').popover({
+                html: true,
+                placement: 'bottom',
+                title: '{{ trans('invoices.discount') }}',
+                content: function () {
+                    html  = '<div class="discount box-body">';
+                    html += '    <div class="col-md-6">';
+                    html += '        <div class="input-group" id="input-discount">';
+                    html += '            {!! Form::number('pre-discount', null, ['id' => 'pre-discount', 'class' => 'form-control text-right']) !!}';
+                    html += '            <div class="input-group-addon"><i class="fa fa-percent"></i></div>';
+                    html += '        </div>';
+                    html += '    </div>';
+                    html += '    <div class="col-md-6">';
+                    html += '        <div class="discount-description">';
+                    html += '           {{ trans('invoices.discount_desc') }}';
+                    html += '        </div>';
+                    html += '    </div>';
+                    html += '</div>';
+                    html += '<div class="discount box-footer">';
+                    html += '    <div class="col-md-12">';
+                    html += '        <div class="form-group no-margin">';
+                    html += '            {!! Form::button('<span class="fa fa-save"></span> &nbsp;' . trans('general.save'), ['type' => 'button', 'id' => 'save-discount','class' => 'btn btn-success']) !!}';
+                    html += '            <a href="javascript:void(0)" id="cancel-discount" class="btn btn-default"><span class="fa fa-times-circle"></span> &nbsp;{{ trans('general.cancel') }}</a>';
+                    html += '       </div>';
+                    html += '    </div>';
+                    html += '</div>';
+
+                    return html;
+                }
+            });
+
             $('#attachment').fancyfile({
                 text  : '{{ trans('general.form.select.file') }}',
                 style : 'btn-default',
                 @if($invoice->attachment)
-                placeholder : '<?php echo $invoice->attachment->basename; ?>'
+                placeholder : '{{ $invoice->attachment->basename }}'
                 @else
                 placeholder : '{{ trans('general.form.no_file_selected') }}'
                 @endif
             });
 
             @if($invoice->attachment)
-            attachment_html  = '<span class="attachment">';
-            attachment_html += '    <a href="{{ url('uploads/' . $invoice->attachment->id . '/download') }}">';
-            attachment_html += '        <span id="download-attachment" class="text-primary">';
-            attachment_html += '            <i class="fa fa-file-{{ $invoice->attachment->aggregate_type }}-o"></i> {{ $invoice->attachment->basename }}';
-            attachment_html += '        </span>';
-            attachment_html += '    </a>';
-            attachment_html += '    {!! Form::open(['id' => 'attachment-' . $invoice->attachment->id, 'method' => 'DELETE', 'url' => [url('uploads/' . $invoice->attachment->id)], 'style' => 'display:inline']) !!}';
-            attachment_html += '    <a id="remove-attachment" href="javascript:void();">';
-            attachment_html += '        <span class="text-danger"><i class="fa fa fa-times"></i></span>';
-            attachment_html += '    </a>';
-            attachment_html += '    {!! Form::close() !!}';
-            attachment_html += '</span>';
-
-            $('.fancy-file .fake-file').append(attachment_html);
+            $.ajax({
+                url: '{{ url('uploads/' . $invoice->attachment->id . '/show') }}',
+                type: 'GET',
+                data: {column_name: 'attachment'},
+                dataType: 'JSON',
+                success: function(json) {
+                    if (json['success']) {
+                        $('.fancy-file').after(json['html']);
+                    }
+                }
+            });
             @endif
 
             @if(old('item'))
@@ -253,11 +294,13 @@
             @endif
         });
 
+        @permission('delete-common-uploads')
         @if($invoice->attachment)
         $(document).on('click', '#remove-attachment', function (e) {
             confirmDelete("#attachment-{!! $invoice->attachment->id !!}", "{!! trans('general.attachment') !!}", "{!! trans('general.delete_confirm', ['name' => '<strong>' . $invoice->attachment->basename . '</strong>', 'type' => strtolower(trans('general.attachment'))]) !!}", "{!! trans('general.cancel') !!}", "{!! trans('general.delete')  !!}");
         });
         @endif
+        @endpermission
 
         $(document).on('click', '#button-add-item', function (e) {
             $.ajax({
@@ -282,7 +325,7 @@
                             },
                             language: {
                                 noResults: function () {
-                                    return '<span id="tax-add-new"><i class="fa fa-plus"> {{ trans('general.title.new', ['type' => trans_choice('general.tax_rates', 1)]) }}</span>';
+                                    return '<span id="tax-add-new"><i class="fa fa-plus-circle"></i> {{ trans('general.title.new', ['type' => trans_choice('general.tax_rates', 1)]) }}</span>';
                                 }
                             }
                         });
@@ -347,50 +390,21 @@
         $(document).on('click', '#tax-add-new', function(e) {
             tax_name = $('.select2-search__field').val();
 
+            $('body > .select2-container.select2-container--default.select2-container--open').remove();
+
             $('#modal-create-tax').remove();
 
             $.ajax({
                 url: '{{ url("modals/taxes/create") }}',
                 type: 'GET',
                 dataType: 'JSON',
-                data: {name: tax_name},
+                data: {name: tax_name, tax_selector: '.tax-select2'},
                 success: function(json) {
                     if (json['success']) {
                         $('body').append(json['html']);
                     }
                 }
             });
-        });
-
-        $('a[rel=popover]').popover({
-            html: true,
-            placement: 'bottom',
-            title: '{{ trans('invoices.discount') }}',
-            content: function () {
-                html  = '<div class="discount box-body">';
-                html += '    <div class="col-md-6">';
-                html += '        <div class="input-group" id="input-discount">';
-                html += '            {!! Form::number('pre-discount', null, ['id' => 'pre-discount', 'class' => 'form-control text-right']) !!}';
-                html += '            <div class="input-group-addon"><i class="fa fa-percent"></i></div>';
-                html += '        </div>';
-                html += '    </div>';
-                html += '    <div class="col-md-6">';
-                html += '        <div class="discount-description">';
-                html += '           {{ trans('invoices.discount_desc') }}';
-                html += '        </div>';
-                html += '    </div>';
-                html += '</div>';
-                html += '<div class="discount box-footer">';
-                html += '    <div class="col-md-12">';
-                html += '        <div class="form-group no-margin">';
-                html += '            {!! Form::button('<span class="fa fa-save"></span> &nbsp;' . trans('general.save'), ['type' => 'button', 'id' => 'save-discount','class' => 'btn btn-success']) !!}';
-                html += '            <a href="javascript:void(0)" id="cancel-discount" class="btn btn-default"><span class="fa fa-times-circle"></span> &nbsp;{{ trans('general.cancel') }}</a>';
-                html += '       </div>';
-                html += '    </div>';
-                html += '</div>';
-
-                return html;
-            }
         });
 
         $(document).on('keyup', '#pre-discount', function(e){
@@ -445,6 +459,7 @@
                     $('#customer_name').val(data.name);
                     $('#customer_email').val(data.email);
                     $('#customer_tax_number').val(data.tax_number);
+                    $('#customer_company_number').val(data.company_number);
                     $('#customer_phone').val(data.phone);
                     $('#customer_address').val(data.address);
 
@@ -475,6 +490,23 @@
 
                     // This event Select2 Stylesheet
                     $('#currency_code').trigger('change');
+                }
+            });
+        });
+
+        $(document).on('hidden.bs.modal', '#modal-create-tax', function () {
+            $('.tax-select2').select2({
+                placeholder: {
+                    id: '-1', // the value of the option
+                    text: "{{ trans('general.form.select.field', ['field' => trans_choice('general.taxes', 1)]) }}"
+                },
+                escapeMarkup: function (markup) {
+                    return markup;
+                },
+                language: {
+                    noResults: function () {
+                        return '<span id="tax-add-new"><i class="fa fa-plus-circle"></i> {{ trans('general.title.new', ['type' => trans_choice('general.tax_rates', 1)]) }}</span>';
+                    }
                 }
             });
         });
