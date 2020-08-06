@@ -288,41 +288,23 @@ class Invoice extends Model
             return $qrData;
         }
 
-        $xmlReqFmt = '<BySquareXmlDocuments xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-                    <Username>matus.ivanecky@gmail.com</Username>
-                    <Password>g3n3r4t0rQR</Password>
-                    <Documents>
-                    <Pay xsi:type="Pay" xmlns="http://www.bysquare.com/bysquare">
-                    <Payments>
-                        <Payment>
-                        <BankAccounts>
-                            <BankAccount>
-                            <IBAN>SK3183300000002800495653</IBAN>
-                            </BankAccount>
-                        </BankAccounts>
-                        <VariableSymbol>%s</VariableSymbol>
-                        <Amount>%.2f</Amount>
-                        <CurrencyCode>EUR</CurrencyCode>
-                        <PaymentNote>platba faktury %s, %s </PaymentNote>
-                        <BeneficiaryName>%s</BeneficiaryName>
-                        <PaymentOptions>paymentorder</PaymentOptions>
-                        </Payment>
-                    </Payments>
-                    </Pay>
-                    </Documents>
-                    </BySquareXmlDocuments>';
+        $jsonReqFmt = '{ "IBAN":"SK3183300000002800495653",
+                         "vs": "%s",
+                         "amount": %.2f,
+                         "currencyCode": "EUR",
+                         "transDescr":"Platba faktury %s od %s",
+                         "recName": "Imcontec s.r.o."
+                        }';
 
         $invoiceid = explode("-",$this->invoice_number)[1];
-        $xmlReq    = sprintf($xmlReqFmt, $invoiceid,
-                                         $this->amount,
+        $jsonReq    = sprintf($jsonReqFmt, $invoiceid,
+                                          $this->amount,
                                          //Date::parse($this->due_date)->format('Y-m-d'),
-                                         $this->invoice_number,
-                                         $this->customer_name,
-                                         $this->customer_name);
+                                          $this->invoice_number,
+                                          $this->customer_name);
 
-        //Log::info($xmlReq);
-        $apiUrl ="https://app.bysquare.com/api/generateQR";
+        Log::info($jsonReq);
+        $apiUrl ="http://www.imcontec.eu:8080/payment/getPaymentData";
 
         // create a new cURL resource
         $hCurl = curl_init();
@@ -330,15 +312,15 @@ class Invoice extends Model
         curl_setopt($hCurl, CURLOPT_URL, $apiUrl );
         curl_setopt($hCurl, CURLOPT_HEADER, 0);
         curl_setopt($hCurl, CURLOPT_HTTPHEADER, array(
-            'Accept: application/xml',
-            'Content-Type: application/xml'
+            'Accept: application/json',
+            'Content-Type: application/json'
         ));
         curl_setopt($hCurl, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($hCurl, CURLOPT_TIMEOUT, 60);
-        curl_setopt($hCurl, CURLOPT_POSTFIELDS, $xmlReq);
+        curl_setopt($hCurl, CURLOPT_POSTFIELDS, $jsonReq);
         curl_setopt($hCurl, CURLOPT_SSL_VERIFYPEER, false);
 
-        $xmlResponse = curl_exec($hCurl);
+        $jsonResponse = curl_exec($hCurl);
         
         //Log::debug($xmlResponse);
         $aCurlInfo = curl_getinfo($hCurl);
@@ -348,8 +330,7 @@ class Invoice extends Model
             Log::warning($sError);
         }
         else{
-            $simpleXml = simplexml_load_string($xmlResponse);
-            $qrData = $simpleXml->PayBySquare;
+            $qrData = $jsonResponse;
         }
         curl_close($hCurl);
 

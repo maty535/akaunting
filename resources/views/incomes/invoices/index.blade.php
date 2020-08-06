@@ -21,8 +21,7 @@
             {!! Form::select('customers[]', $customers, request('customers'), ['id' => 'filter-customers', 'class' => 'form-control input-filter input-lg', 'multiple' => 'multiple']) !!}
             {!! Form::select('categories[]', $categories, request('categories'), ['id' => 'filter-categories', 'class' => 'form-control input-filter input-lg', 'multiple' => 'multiple']) !!}
             {!! Form::dateRange('delivered_at', trans('invoices.delivered_date'),'calendar', ['id' => 'filter-delivered'] ) !!}
-            {!! Form::dateRange('invoice_date', trans('invoices.invoice_date'),'calendar',   ['id' => 'filter-invoiced']  ) !!}
-            {!! Form::select('statuses[]', $statuses, request('statuses'), ['id' => 'filter-statuses', 'class' => 'form-control input-filter input-lg', 'multiple' => 'multiple']) !!}
+	            {!! Form::select('statuses[]', $statuses, request('statuses'), ['id' => 'filter-statuses', 'class' => 'form-control input-filter input-lg', 'multiple' => 'multiple']) !!}
             {!! Form::button('<span class="fa fa-filter"></span> &nbsp;' . trans('general.filter'), ['type' => 'submit', 'class' => 'btn btn-sm btn-default btn-filter']) !!}
         </div>
         <div class="pull-right">
