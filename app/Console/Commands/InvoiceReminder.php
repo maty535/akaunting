@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Common\Company;
 use App\Models\Income\Invoice;
-use App\Notifications\Income\Invoice as Notification;
+use App\Notifications\Income\InvoiceDueReminder as ReminderNotification;
 use App\Utilities\Overrider;
 use Date;
 use Illuminate\Console\Command;
@@ -82,7 +82,7 @@ class InvoiceReminder extends Command
         foreach ($invoices as $invoice) {
             // Notify the customer
             if ($invoice->customer && !empty($invoice->customer_email)) {
-                $invoice->customer->notify(new Notification($invoice));
+                $invoice->customer->notify(new ReminderNotification($invoice, $day));
             }
 
             // Notify all users assigned to this company
@@ -91,7 +91,7 @@ class InvoiceReminder extends Command
                     continue;
                 }
 
-                $user->notify(new Notification($invoice));
+                $user->notify(new ReminderNotification($invoice));
             }
         }
     }
