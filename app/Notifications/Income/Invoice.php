@@ -51,6 +51,7 @@ class Invoice extends Notification
 
         // Override per company as Laravel doesn't read config
         $message->from(config('mail.from.address'), config('mail.from.name'));
+        $message->subject("Informácia o vystavenej faktúre: ".$this->invoice->invoice_number);
 
         // Attach the PDF file if available
         if (isset($this->invoice->pdf_path)) {
