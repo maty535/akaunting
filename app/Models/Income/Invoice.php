@@ -283,6 +283,13 @@ class Invoice extends Model
     }
  
     public function getPayBySquareAttribute(){
+    
+        $customerRegion = strtoupper(substr($this->customer_tax_number,0,2));
+        if(empty($customerRegion) || !ctype_alpha($customerRegion)){
+            $customerRegion = 'SK';
+        }
+        
+    
         $qrData = '';
         if (empty($this->amount) || ($this->amount == 0) ) {
             return $qrData;
@@ -293,15 +300,18 @@ class Invoice extends Model
                          "amount": %.2f,
                          "currencyCode": "EUR",
                          "transDescr":"Platba faktury %s od %s",
-                         "recName": "Imcontec s.r.o."
+                         "recName": "Imcontec s.r.o.",
+                         "qrRegion": "%s"
+                         
                         }';
 
         $invoiceid = explode("-",$this->invoice_number)[1];
         $jsonReq    = sprintf($jsonReqFmt, $invoiceid,
-                                          $this->amount,
+                                           $this->amount,
                                          //Date::parse($this->due_date)->format('Y-m-d'),
                                           $this->invoice_number,
-                                          $this->customer_name);
+                                          $this->customer_name,
+                                          $customerRegion);
 
         Log::info($jsonReq);
         $apiUrl ="http://www.imcontec.eu:8080/payment/getPaymentData";

@@ -39,7 +39,7 @@ class Kernel extends ConsoleKernel
         }
 
         $schedule_time = env('APP_SCHEDULE_TIME', '09:00');
-        //echo "APP_SCHEDULE_TIME:".env('APP_SCHEDULE_TIME')."\n";
+        echo "APP_SCHEDULE_TIME:".env('APP_SCHEDULE_TIME')."\n";
 
         $schedule->command('reminder:invoice')->dailyAt($schedule_time);
         $schedule->command('reminder:bill')->dailyAt($schedule_time);

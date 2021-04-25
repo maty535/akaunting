@@ -139,9 +139,11 @@ class RecurringCheck extends Command
         ]);
 
         // Notify the customer
+        /*
         if ($clone->customer && !empty($clone->customer_email)) {
             $clone->customer->notify(new InvoiceNotification($clone));
         }
+        */
 
         // Notify all users assigned to this company
         foreach ($company->users as $user) {
