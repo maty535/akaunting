@@ -91,7 +91,7 @@ class InvoiceReminder extends Command
                     continue;
                 }
 
-                $user->notify(new ReminderNotification($invoice));
+                $user->notify(new ReminderNotification($invoice,$day));
             }
         }
     }

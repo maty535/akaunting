@@ -62,8 +62,14 @@ return [
     ],
 
     'notification' => [
-        'message'       => 'Týmto si Vás dovoľujeme informovať o vystavenej faktúre pre firmu: ":customer" vo výške :amount.',
-        'button'        => 'Zaplatiť teraz',
+        'message'       	=> 'Týmto si Vás dovoľujeme informovať o vystavenej faktúre pre firmu: ":customer" vo výške :amount.',
+        'button'        	=> 'Zaplatiť teraz',
+        'due_reminder_message'	=> 'Týmto si Vás dovoľujeme informovať o neuhradenej
+        faktúre ":invoice_number" pre firmu: ":customer" vo výške :amount, ktorá je :dueDays dni po splatnosti.',
+        'warning_message'	=> 'Prosíme Vás o jej uhradenie do 2 dní, inak budeme musieť využiť
+                                    všetky zákonné možnosti a účtovať Vám sanckie, ktoré su
+                                    nevyhnutne spojené s vymáhaním platby za nami dodané služby.',
     ],
+    
 
 ];
