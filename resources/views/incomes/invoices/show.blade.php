@@ -261,7 +261,15 @@
                                 </td>
                                 @stack('name_td_end')
                                 @stack('quantity_td_start')
-                                <td class="text-center">{{ $item->quantity }} {{ $item->unit }}</td>
+                                <td class="text-center">
+                                    {{ $item->quantity }} 
+                                    
+                                    @if ($item->unit == 'mesiac' && $item->quantity> 1)
+                                        mesiace
+                                    @else
+                                        {{ $item->unit }}
+                                    @endif
+                                </td>
                                 @stack('quantity_td_end')
                                 
                                 @stack('price_td_start')

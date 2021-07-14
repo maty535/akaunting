@@ -82,6 +82,7 @@ Route::group(['middleware' => 'language'], function () {
                 Route::get('invoices/{invoice}/pay', 'Incomes\Invoices@markPaid');
                 Route::get('invoices/{invoice}/print', 'Incomes\Invoices@printInvoice');
                 Route::get('invoices/{invoice}/pdf', 'Incomes\Invoices@pdfInvoice');
+                Route::get('invoices/{invoice}/reminder', 'Incomes\Invoices@reminderInvoice');
                 Route::get('invoices/{invoice}/duplicate', 'Incomes\Invoices@duplicate');
                 Route::get('invoices/addItem', 'Incomes\Invoices@addItem')->middleware(['money'])->name('invoice.add.item');
                 Route::post('invoices/payment', 'Incomes\Invoices@payment')->middleware(['dateformat', 'money'])->name('invoice.payment');

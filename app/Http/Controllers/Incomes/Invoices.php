@@ -427,7 +427,71 @@ class Invoices extends Controller
 
         return view($invoice->template_path, compact('invoice'));
     }
+    /**
+     * Reminder invoice after due date.
+     *
+     * @param  Invoice $invoice
+     *
+     * @return Response
+     */
+    public function reminderInvoice(Invoice $invoice)
+    {
+				if (empty($invoice->customer_email)) {
+            return redirect()->back();
+        }
 
+        $invoice = $this->prepareInvoice($invoice);
+
+        $view = view($invoice->template_path, compact('invoice'))->render();
+        $html = mb_convert_encoding($view, 'HTML-ENTITIES');
+
+        $pdf = \App::make('dompdf.wrapper');
+        $pdf->loadHTML($html);
+
+        $company_name = setting('general.company_name');
+        $customer_name = $invoice->customer_name;
+        $file =
+            storage_path('app/temp/'.Date::parse($invoice->delivered_at)->format("Y-m-d").'-'.$invoice->invoice_number.'-'.
+            substr($company_name, 0, strpos($company_name, ' ')).'-'.
+            substr($customer_name, 0, strpos($customer_name, ' ')).'.pdf');
+
+        $invoice->pdf_path = $file;
+
+        // Save the PDF file into temp folder
+        $pdf->save($file);
+
+        // Notify the customer
+        $invoice->customer->notify(new ItemReminderNotification($invoice));
+
+        // Delete temp file
+        File::delete($file);
+
+        unset($invoice->paid);
+        unset($invoice->template_path);
+        unset($invoice->pdf_path);
+        unset($invoice->reconciled);
+
+        // Mark invoice as sent
+        if ($invoice->invoice_status_code != 'partial') {
+            $invoice->invoice_status_code = 'sent';
+
+            $invoice->save();
+        }
+
+        // Add invoice history
+        InvoiceHistory::create([
+            'company_id' => $invoice->company_id,
+            'invoice_id' => $invoice->id,
+            'status_code' => 'sent',
+            'notify' => 1,
+            'description' => trans('invoices.send_reminder'),
+        ]);
+
+        flash(trans('invoices.messages.reminder_sent'))->success();
+
+        return redirect()->back();
+        
+    }
     /**
      * Download the PDF file of invoice.
      *

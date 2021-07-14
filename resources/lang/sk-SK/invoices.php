@@ -32,6 +32,7 @@ return [
     'mark_sent'         => 'Zmeniť na odoslané',
     'download_pdf'      => 'Stiahnuť PDF',
     'send_mail'         => 'Odoslať e-mail',
+    'send_reminder'     => 'Odoslať upozornenie na splatnosť',
     'all_invoices'      => 'Prihláste sa pre zobrazenie všetkých faktúr',
 
     'status' => [
@@ -45,6 +46,7 @@ return [
 
     'messages' => [
         'email_sent'     => 'Email s faktúrou bol úspešne odoslaný!',
+				'reminder_sent'  => 'Upozornenie na splatnosť faktúry bolo odoslané.',
         'marked_sent'    => 'Faktúra bola označená ako odoslaná!',
         'email_required' => 'Žiadna e-mailová adresa pre tohto zákazníka!',
         'draft'          => 'To je <b>Návrh</b> faktúry, po odoslaní bude zobrazená v grafe.',

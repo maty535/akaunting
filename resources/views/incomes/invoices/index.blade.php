@@ -65,6 +65,9 @@
                                 <ul class="dropdown-menu dropdown-menu-right">
                                     <li><a href="{{ url('incomes/invoices/' . $item->id. '/email') }}">{{ trans('invoices.send_mail') }}</a></li> 
                                     <li><a href="{{ url('incomes/invoices/' . $item->id.'/pdf') }}">{{ trans('invoices.download_pdf') }}</a></li> 
+                                    @if ($item->status->code != 'paid' && $item->status->code !='draft' )
+                                    <li><a href="{{ url('incomes/invoices/' . $item->id.'/reminder') }}">{{ trans('invoices.send_reminder') }}</a></li> 
+                                    @endif
                                     <li class="divider"></li>                                
                                     <li><a href="{{ url('incomes/invoices/' . $item->id) }}">{{ trans('general.show') }}</a></li>
                                     @if (!$item->reconciled)
