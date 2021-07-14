@@ -27,6 +27,7 @@ use App\Models\Setting\Category;
 use App\Models\Setting\Currency;
 use App\Models\Setting\Tax;
 use App\Notifications\Income\Invoice as Notification;
+use App\Notifications\Income\InvoiceDueReminder as InvoiceDueReminderNotification;
 use App\Notifications\Common\Item as ItemNotification;
 use App\Notifications\Common\ItemReminder as ItemReminderNotification;
 use App\Traits\Currencies;
@@ -461,7 +462,7 @@ class Invoices extends Controller
         $pdf->save($file);
 
         // Notify the customer
-        $invoice->customer->notify(new ItemReminderNotification($invoice));
+        $invoice->customer->notify(new InvoiceDueReminderNotification($invoice, Date::parse($invoice->due_at)->diffInDays(Date::today())));
 
         // Delete temp file
         File::delete($file);

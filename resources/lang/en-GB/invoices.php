@@ -32,6 +32,7 @@ return [
     'mark_sent'         => 'Mark Sent',
     'download_pdf'      => 'Download PDF',
     'send_mail'         => 'Send Email',
+    'send_reminder'     => 'Send reminder due date.',
     'all_invoices'      => 'Login to view all invoices',
 
     'status' => [
@@ -45,6 +46,7 @@ return [
 
     'messages' => [
         'email_sent'     => 'Invoice email has been sent successfully!',
+        'reminder_sent'  => 'Invoice due reminder email has been sent successfully.',
         'marked_sent'    => 'Invoice marked as sent successfully!',
         'email_required' => 'No email address for this customer!',
         'draft'          => 'This is a <b>DRAFT</b> invoice and will be reflected to charts after it gets sent.',
