@@ -176,7 +176,7 @@
                 <!-- User Account: style can be found in dropdown.less -->
                 <li class="dropdown user user-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        @if ($user->picture)
+                        @if ($user != null && $user->picture)
                             @if (setting('general.use_gravatar', '0') == '1')
                                 <img src="{{ $user->picture }}" class="user-image" alt="User Image">
                             @else
@@ -185,14 +185,14 @@
                         @else
                             <i class="fa fa-user-o"></i>
                         @endif
-                        @if (!empty($user->name))
+                        @if ($user != null && !empty($user->name))
                             <span class="hidden-xs">{{ $user->name }}</span>
                         @endif
                     </a>
                     <ul class="dropdown-menu">
                         <!-- User image -->
                         <li class="user-header">
-                            @if ($user->picture)
+                            @if ($user != null && $user->picture)
                                 @if (setting('general.use_gravatar', '0') == '1')
                                     <img src="{{ $user->picture }}" class="img-circle" alt="User Image">
                                 @else
@@ -202,10 +202,11 @@
                                 <i class="fa fa-4 fa-user-o" style="color: #fff; font-size: 7em;"></i>
                             @endif
                             <p>
-                                @if (!empty($user->name))
-                                {{ $user->name }}
+                                @if ($user != null && !empty($user->name))
+                                  {{ $user->name }}
+                                  <small>{{ trans('header.last_login', ['time' => $user->last_logged_in_at]) }}</small>
                                 @endif
-                                <small>{{ trans('header.last_login', ['time' => $user->last_logged_in_at]) }}</small>
+                                
                             </p>
                         </li>
                         <!-- Menu Body -->

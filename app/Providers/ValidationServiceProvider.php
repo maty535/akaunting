@@ -46,7 +46,7 @@ class ValidationServiceProvider extends ServiceProvider
                 $status = true;
             }
 
-            $amount = $value;
+            $amount = (double) $value;
 
             return $status;
         },

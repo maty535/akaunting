@@ -29,17 +29,17 @@ class Header
         $company = null;
 
         // Get customer company
-        if ($user->customer()) {
+        $undereads = [];
+        if ($user != null && $user->customer()) {
             $company = (object)[
                 'company_name' => setting('general.company_name'),
                 'company_email' => setting('general.company_email'),
                 'company_address' => setting('general.company_address'),
                 'company_logo' => setting('general.company_logo'),
             ];
+            $undereads = $user->unreadNotifications;
         }
-
-        $undereads = $user->unreadNotifications;
-
+        
         foreach ($undereads as $underead) {
             $data = $underead->getAttribute('data');
 
@@ -77,5 +77,6 @@ class Header
             'company' => $company,
             'updates' => $updates,
         ]);
+        
     }
 }

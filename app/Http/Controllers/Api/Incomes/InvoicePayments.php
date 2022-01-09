@@ -16,6 +16,8 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
+use Illuminate\Support\Facades\Log;
+
 class InvoicePayments extends BaseController
 {
     use DateTime, Helpers, AuthorizesRequests, DispatchesJobs, ValidatesRequests;
@@ -65,11 +67,12 @@ class InvoicePayments extends BaseController
         $request['invoice_id'] = $invoice_id;
 
         $invoice = Invoice::find($invoice_id);
+        $amount =  (double) $request['amount'];
+        Log::debug("Invoice ". $invoice->invoice_number." payment: ".$amount." is received." );
+        
 
         if ($request['currency_code'] == $invoice->currency_code) {
-            if ($request['amount'] > $invoice->amount) {
-                return $this->response->noContent();
-            } elseif ($request['amount'] == $invoice->amount) {
+            if ($amount >= $invoice->amount) {
                 $invoice->invoice_status_code = 'paid';
             } else {
                 $invoice->invoice_status_code = 'partial';
@@ -77,20 +80,20 @@ class InvoicePayments extends BaseController
         } else {
             $request_invoice = new Invoice();
 
-            $request_invoice->amount = (float) $request['amount'];
+            $request_invoice->amount = (double) $request['amount'];
             $request_invoice->currency_code = $currency->code;
             $request_invoice->currency_rate = $currency->rate;
 
             $amount = $request_invoice->getConvertedAmount();
 
-            if ($amount > $invoice->amount) {
-                return $this->response->noContent();
-            } elseif ($amount == $invoice->amount) {
+            if ($amount >= $invoice->amount) {
                 $invoice->invoice_status_code = 'paid';
             } else {
                 $invoice->invoice_status_code = 'partial';
             }
         }
+        
+        Log::debug('Invoice Status code:'.$invoice->invoice_status_code);
 
         $invoice->save();
 
@@ -100,10 +103,11 @@ class InvoicePayments extends BaseController
         $request['notify'] = 0;
 
         $desc_date = Date::parse($request['paid_at'])->format($this->getCompanyDateFormat());
-        $desc_amount = money((float) $request['amount'], $request['currency_code'], true)->format();
+        $desc_amount = money($amount, $request['currency_code'], true)->format();
         $request['description'] = $desc_date . ' ' . $desc_amount;
 
         InvoiceHistory::create($request->input());
+        Log::debug("Invoice ". $invoice->invoice_number." payment: ".$amount." has been set ." );
 
         return $this->response->created(url('api/invoices/' . $invoice_id . '/payments' . $invoice_payment->id));
     }

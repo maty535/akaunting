@@ -39,7 +39,16 @@ class Logo
             $path = asset('public/img/company.png');
         }
 
-        $image = Image::make($path)->encode()->getEncoded();
+
+        $file_data = file_get_contents( $path, false, stream_context_create( [
+	'ssl' => [
+		'verify_peer'      => false,
+		'verify_peer_name' => false,
+		],
+	] ) );
+        $image = Image::make($file_data)->encode()->getEncoded();
+        
+        
 
         if (empty($image)) {
             return $logo;
