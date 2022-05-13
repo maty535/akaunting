@@ -27,7 +27,6 @@
                 {{ Form::textGroup('domain', trans('companies.domain'),      'globe') }}
                 {{ Form::emailGroup('company_email', trans('general.email'), 'envelope') }}
                 {{ Form::textGroup('company_phone', trans('general.phone'),  'phone') }}
-
                 
                 {{ Form::textareaGroup('company_address', trans('general.address')) }}
 

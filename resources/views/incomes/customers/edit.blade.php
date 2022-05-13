@@ -26,6 +26,8 @@
         {{ Form::textGroup('phone', trans('general.phone'), 'phone', []) }}
 
         {{ Form::textGroup('website', trans('general.website'), 'globe',[]) }}
+        
+        {{ Form::textGroup('email_cc', 'email CC:', 'envelope', []) }}
 
         {{ Form::textareaGroup('address', trans('general.address')) }}
 

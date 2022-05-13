@@ -250,7 +250,8 @@
                      height="160"
                     src='data:image/png;base64, {{$invoice->payBySquare}}'/>
                 </td>
-                <td lign="right"><img src="<?php echo e(asset('public/img/stamp-opt.png'));?>" width="233" height="153" align="right" /></td></tr>
+                <td lign="right"><img src="<?php echo
+                e(asset('public/img/stamp-'.str_replace(' ', '', setting('general.company_number')).'.png'));?>" width="233" height="153" align="right" /></td></tr>
             </table>
             @stack('signature_input_end')
     </div>

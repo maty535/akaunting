@@ -63,7 +63,11 @@ class InvoiceDueReminder extends Notification
         $message->subject("Upozornenie na neuhradenú faktúru: ".
                             $this->invoice->invoice_number.", ".$this->afterDueDate." dni po splatnosti.");
                             
-        $message->line(trans('invoices.notification.warning_message'));                    
+        $message->line(trans('invoices.notification.warning_message'));
+        if($this->invoice->customer->email_cc && strlen($this->invoice->customer->email_cc) > 5 ){
+                $message->cc($this->invoice->customer->email_cc);
+        }
+                    
 
         // Attach the PDF file if available
         if (isset($this->invoice->pdf_path)) {
