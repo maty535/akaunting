@@ -144,6 +144,7 @@
 
         {{ Form::hidden('customer_name', old('customer_name'), ['id' => 'customer_name']) }}
         {{ Form::hidden('customer_email', old('customer_email'), ['id' => 'customer_email']) }}
+        {{ Form::hidden('customer_company_number', old('customer_company_number', null), ['id' =>'customer_company_number']) }}
         {{ Form::hidden('customer_tax_number', old('customer_tax_number'), ['id' => 'customer_tax_number']) }}
         {{ Form::hidden('customer_phone', old('customer_phone'), ['id' => 'customer_phone']) }}
         {{ Form::hidden('customer_address', old('customer_address'), ['id' => 'customer_address']) }}
@@ -470,6 +471,7 @@
                     $('#customer_name').val(data.name);
                     $('#customer_email').val(data.email);
                     $('#customer_tax_number').val(data.tax_number);
+                    $('#customer_company_number').val(data.company_number);
                     $('#customer_phone').val(data.phone);
                     $('#customer_address').val(data.address);
 

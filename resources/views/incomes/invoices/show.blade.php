@@ -151,7 +151,7 @@
                         <br>                        
                         @stack('company_number_input_start')
                         @if ($invoice->customer_company_number)
-                          {{ trans('general.company_number') }}: {{$invoice->customer_company_number }}<br>
+                          {{ trans('general.company_number') }}: {{$invoice->customer_company_number }} |
                         @endif
                         @stack('company_number_input_end')
                         
