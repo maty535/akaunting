@@ -32,14 +32,16 @@ class Bill extends Model
      *
      * @var array
      */
-    protected $fillable = ['company_id', 'bill_number', 'order_number', 'bill_status_code', 'billed_at', 'due_at', 'amount', 'currency_code', 'currency_rate', 'vendor_id', 'vendor_name', 'vendor_email', 'vendor_tax_number', 'vendor_phone', 'vendor_address', 'notes', 'category_id', 'parent_id'];
+    protected $fillable = ['company_id', 'bill_number', 'invoice_number' ,'order_number', 'bill_status_code', 'billed_at', 'due_at', 'amount', 'currency_code', 'currency_rate', 'vendor_id', 'vendor_name', 'vendor_email', 'vendor_tax_number', 'vendor_phone', 'vendor_address', 'notes', 'category_id',
+     'parent_id', 'vendor_tax_number', 'vendor_company_number',
+     'vendor_iban', 'vendor_bic'];
 
     /**
      * Sortable columns.
      *
      * @var array
      */
-    public $sortable = ['bill_number', 'vendor_name', 'amount', 'status.name', 'billed_at', 'due_at', 'bill_status_code'];
+    public $sortable = ['bill_number', 'invoice_number', 'vendor_name', 'amount', 'status.name', 'billed_at', 'due_at', 'bill_status_code'];
 
     /**
      * Searchable rules.

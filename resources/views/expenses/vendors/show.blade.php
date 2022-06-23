@@ -36,6 +36,12 @@
                         <li class="list-group-item">
                             <b>{{ trans('general.website') }}</b> <a class="pull-right">{{ $vendor->website }}</a>
                         </li>
+                        
+                        <li class="list-group-item">
+                            <b>{{ trans('general.company_number') }}</b> <a class="pull-right">{{
+                             $vendor->company_number }}</a>
+                        </li>
+                        
                         <li class="list-group-item">
                             <b>{{ trans('general.tax_number') }}</b> <a class="pull-right">{{ $vendor->tax_number }}</a>
                         </li>

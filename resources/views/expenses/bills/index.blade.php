@@ -37,8 +37,15 @@
             <table class="table table-striped table-hover" id="tbl-bills">
                 <thead>
                     <tr>
-                        <th class="col-md-2">@sortablelink('bill_number', trans_choice('general.numbers', 1))</th>
+                        <th class="col-md-2">@sortablelink('bill_number', trans_choice('general.account_number', 1))</th>
+                        <th class="col-md-2">@sortablelink('invoice_number', trans_choice('invoices.invoice_number', 1))</th>
+                        
                         <th class="col-md-2">@sortablelink('vendor_name', trans_choice('general.vendors', 1))</th>
+                        <th
+                        class="col-md-2">{{
+                        trans('general.company_number')}}</th>
+                        <th
+                        class="col-md-2">{{ trans('general.tax_number')}}</th>
                         <th class="col-md-2 text-right amount-space">@sortablelink('amount', trans('general.amount'))</th>
                         <th class="col-md-2">@sortablelink('billed_at', trans('bills.bill_date'))</th>
                         <th class="col-md-2">@sortablelink('due_at', trans('bills.due_date'))</th>
@@ -51,7 +58,10 @@
                     @php $paid = $item->paid; @endphp
                     <tr>
                         <td><a href="{{ url('expenses/bills/' . $item->id . ' ') }}">{{ $item->bill_number }}</a></td>
+                        <td><a href="{{ url('expenses/bills/' . $item->id . ' ') }}">{{$item->invoice_number }}</a></td>
                         <td>{{ $item->vendor_name }}</td>
+                        <td>{{ $item->vendor->company_number }}</td>
+                        <td>{{ $item->vendor->tax_number }}</td>
                         <td class="text-right amount-space">@money($item->amount, $item->currency_code, true)</td>
                         <td>{{ Date::parse($item->billed_at)->format($date_format) }}</td>
                         <td>{{ Date::parse($item->due_at)->format($date_format) }}</td>

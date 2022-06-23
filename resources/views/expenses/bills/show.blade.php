@@ -162,9 +162,9 @@
                         @endif
                         <br>
                         @if (setting('general.company_phone'))
-                        {{ setting('general.company_phone') }}<br>
+                        mobil: {{ setting('general.company_phone') }}<br>
                         @endif
-                        {{ setting('general.company_email') }}
+                        email: {{ setting('general.company_email') }}
                     </address>
                 </div>
             </div>
@@ -173,7 +173,7 @@
             @stack('bill_information_start')
             <div class="row">
                 <div class="col-xs-7">
-                    {{ trans('bills.bill_from') }}
+                    {{ trans_choice('general.vendors', 1) }}
                     <address>
                         @stack('name_input_start')
                         <strong>{{ $bill->vendor_name }}</strong><br>
@@ -185,10 +185,17 @@
 
                         @stack('tax_number_input_start')
                         @if ($bill->vendor_tax_number)
-                        {{ trans('general.tax_number') }}: {{ $bill->vendor_tax_number }}<br>
+                          {{ trans('general.tax_number') }}: {{ $bill->vendor_tax_number }}<br>
                         @endif
                         @stack('tax_number_input_end')
                         <br>
+                        
+                        @stack('iban_start')
+                        @if ($bill->vendor->iban)
+                        IBAN: {{ $bill->vendor->iban }}<br/>
+                        @endif
+                        @stack('iban_input_end')
+                        
                         @stack('phone_input_start')
                         @if ($bill->vendor_phone)
                         {{ $bill->vendor_phone }}<br>
@@ -196,7 +203,7 @@
                         @stack('phone_input_end')
 
                         @stack('email_start')
-                        {{ $bill->vendor_email }}
+                        email: {{ $bill->vendor_email }}
                         @stack('email_input_end')
                     </address>
                 </div>
@@ -208,9 +215,20 @@
                                 @stack('bill_number_input_start')
                                 <tr>
                                     <th>{{ trans('bills.bill_number') }}:</th>
-                                    <td class="text-right">{{ $bill->bill_number }}</td>
+                                    <td class="text-right">{{
+                                    $bill->bill_number }}</td>
                                 </tr>
                                 @stack('bill_number_input_end')
+                                
+                                @stack('invoice_number_input_start')
+                                @if ($bill->invoice_number)
+                                <tr>
+                                    <th>{{ trans('invoices.invoice_number') }}:</th>
+                                    <td class="text-right">{{ $bill->invoice_number }}</td>
+                                </tr>
+                                @endif
+                                @stack('invoice_number_input_end')
+
 
                                 @stack('order_number_input_start')
                                 @if ($bill->order_number)
@@ -220,6 +238,7 @@
                                 </tr>
                                 @endif
                                 @stack('order_number_input_end')
+
 
                                 @stack('billed_at_input_start')
                                 <tr>

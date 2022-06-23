@@ -28,9 +28,13 @@
 
         {{ Form::textGroup('due_at', trans('bills.due_date'), 'calendar',['id' => 'due_at', 'class' => 'form-control', 'required' => 'required', 'data-inputmask' => '\'alias\': \'yyyy/mm/dd\'', 'data-mask' => '', 'autocomplete' => 'off'],Date::now()->toDateString()) }}
 
-        {{ Form::textGroup('bill_number', trans('bills.bill_number'), 'file-text-o') }}
+        {{ Form::textGroup('invoice_number', trans('invoices.invoice_number'), 'shopping-cart',[]) }}
 
         {{ Form::textGroup('order_number', trans('bills.order_number'), 'shopping-cart',[]) }}
+        
+        {{ Form::textGroup('bill_number', trans('bills.bill_number'),'file-text-o',  ['id'=>'vendor_iban']) }}
+        
+        
 
         <div class="form-group col-md-12">
             {!! Form::label('items', trans_choice('general.items', 2), ['class' => 'control-label']) !!}
@@ -137,6 +141,7 @@
         {{ Form::hidden('vendor_tax_number', old('vendor_tax_number'), ['id' => 'vendor_tax_number']) }}
         {{ Form::hidden('vendor_phone', old('vendor_phone'), ['id' => 'vendor_phone']) }}
         {{ Form::hidden('vendor_address', old('vendor_address'), ['id' => 'vendor_address']) }}
+        {{ Form::hidden('vendor_iban', old('vendor_iban'), ['id' => 'vendor_iban']) }}
         {{ Form::hidden('currency_rate', old('currency_rate'), ['id' => 'currency_rate']) }}
         {{ Form::hidden('bill_status_code', old('bill_status_code', 'draft'), ['id' => 'bill_status_code']) }}
         {{ Form::hidden('amount', old('amount', '0'), ['id' => 'amount']) }}
@@ -452,6 +457,7 @@
                     $('#vendor_tax_number').val(data.tax_number);
                     $('#vendor_phone').val(data.phone);
                     $('#vendor_address').val(data.address);
+                    $('#vendor_iban').val(data.iban);
 
                     $('#currency_code').val(data.currency_code);
                     $('#currency_rate').val(data.currency_rate);

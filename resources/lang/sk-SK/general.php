@@ -1,7 +1,7 @@
 <?php
 
 return [
-
+    'account_number'	    => 'Číslo účtu',
     'items'                 => 'Položka | Položky',
     'incomes'               => 'Príjem | Príjmy',
     'invoices'              => 'Faktúra | Faktúry',
