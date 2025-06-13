@@ -41,7 +41,7 @@ class Invoice extends Model
      *
      * @var array
      */
-    public $sortable = ['invoice_number', 'customer_name', 'amount', 'status' , 'invoiced_at', 'due_at', 'delivered_at', 'invoice_status_code'];
+    public $sortable = [ 'id', 'invoice_number', 'customer_name', 'amount', 'status' , 'invoiced_at', 'due_at', 'delivered_at', 'invoice_status_code'];
 
     /**
      * Searchable rules.
@@ -71,7 +71,7 @@ class Invoice extends Model
     {
         return $this->belongsTo('App\Models\Setting\Category');
     }
-
+    
     public function currency()
     {
         return $this->belongsTo('App\Models\Setting\Currency', 'currency_code', 'code');
@@ -81,7 +81,7 @@ class Invoice extends Model
     {
         return $this->belongsTo('App\Models\Income\Customer');
     }
-
+    
     public function items()
     {
         return $this->hasMany('App\Models\Income\InvoiceItem');
@@ -281,8 +281,11 @@ class Invoice extends Model
 
         return $paid;
     }
- 
-    public function getPayBySquareAttribute(){
+    
+    
+    
+     
+    public function getPayBySquare($iban,$companyName){
     
         $customerRegion = strtoupper(substr($this->customer_tax_number,0,2));
         if(empty($customerRegion) || !ctype_alpha($customerRegion)){
@@ -295,7 +298,75 @@ class Invoice extends Model
             return $qrData;
         }
 
-        $jsonReqFmt = '{ "IBAN":"SK3183300000002800495653",
+        $jsonReqFmt = '{ "IBAN":"%s",
+                         "vs": "%s",
+                         "amount": %.2f,
+                         "currencyCode": "EUR",
+                         "transDescr":"Platba faktury %s od %s",
+                         "recName": "%s",
+                         "qrRegion": "%s"
+                         
+                        }';
+
+        $invoiceid = explode("-",$this->invoice_number)[1];
+        $jsonReq    = sprintf($jsonReqFmt, $iban,
+                                           $invoiceid,
+                                           $this->amount,
+                                         //Date::parse($this->due_date)->format('Y-m-d'),
+                                          $this->invoice_number,
+                                          $this->customer_name,
+                                          $companyName,
+                                          $customerRegion);
+
+        Log::info($jsonReq);
+        $apiUrl ="http://www.imcontec.eu:8080/payment/getPaymentData";
+
+        // create a new cURL resource
+        $hCurl = curl_init();
+        // set URL and other appropriate options
+        curl_setopt($hCurl, CURLOPT_URL, $apiUrl );
+        curl_setopt($hCurl, CURLOPT_HEADER, 0);
+        curl_setopt($hCurl, CURLOPT_HTTPHEADER, array(
+            'Accept: application/json',
+            'Content-Type: application/json'
+        ));
+        curl_setopt($hCurl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($hCurl, CURLOPT_TIMEOUT, 60);
+        curl_setopt($hCurl, CURLOPT_POSTFIELDS, $jsonReq);
+        curl_setopt($hCurl, CURLOPT_SSL_VERIFYPEER, false);
+
+        $jsonResponse = curl_exec($hCurl);
+        
+        //Log::debug($xmlResponse);
+        $aCurlInfo = curl_getinfo($hCurl);
+        $iError = curl_errno($hCurl);
+        if($iError !=0)
+        {   $sError = curl_error($hCurl);
+            Log::warning($sError);
+        }
+        else{
+            $qrData = $jsonResponse;
+        }
+        curl_close($hCurl);
+
+        return $qrData; 
+        
+    }
+ 
+ public function getPayBySquareAttribute(){
+    
+        $customerRegion = strtoupper(substr($this->customer_tax_number,0,2));
+        if(empty($customerRegion) || !ctype_alpha($customerRegion)){
+            $customerRegion = 'SK';
+        }
+        
+    
+        $qrData = '';
+        if (empty($this->amount) || ($this->amount == 0) ) {
+            return $qrData;
+        }
+
+        $jsonReqFmt = '{ "IBAN":"%s",
                          "vs": "%s",
                          "amount": %.2f,
                          "currencyCode": "EUR",
@@ -306,7 +377,8 @@ class Invoice extends Model
                         }';
 
         $invoiceid = explode("-",$this->invoice_number)[1];
-        $jsonReq    = sprintf($jsonReqFmt, $invoiceid,
+        $jsonReq    = sprintf($jsonReqFmt, $this->company->iban,
+                                           $invoiceid,
                                            $this->amount,
                                          //Date::parse($this->due_date)->format('Y-m-d'),
                                           $this->invoice_number,

@@ -14,7 +14,7 @@
                 @endif
 
                 <div class="info-box-content">
-                    <span class="info-box-text">{{ trans('dashboard.total_incomes') }}</span>
+                    <span class="info-box-text">{{trans('dashboard.total_incomes')}} [{{ date("Y")}}]</span>
                     <span class="info-box-number">@money($total_incomes['total'], setting('general.default_currency'), true)</span>
                     <div class="progress-group" title="{{ trans('dashboard.open_invoices') }}: {{ $total_incomes['open_invoice'] }}<br>{{ trans('dashboard.overdue_invoices') }}: {{ $total_incomes['overdue_invoice'] }}" data-toggle="tooltip" data-html="true">
                         <div class="progress sm">
@@ -37,7 +37,7 @@
                 @endif
 
                 <div class="info-box-content">
-                    <span class="info-box-text">{{ trans('dashboard.total_expenses') }}</span>
+                    <span class="info-box-text">{{ trans('dashboard.total_expenses') }} [{{ date("Y")}}]</span>
                     <span class="info-box-number">@money($total_expenses['total'], setting('general.default_currency'), true)</span>
 
                     <div class="progress-group" title="{{ trans('dashboard.open_bills') }}: {{ $total_expenses['open_bill'] }}<br>{{ trans('dashboard.overdue_bills') }}: {{ $total_expenses['overdue_bill'] }}" data-toggle="tooltip" data-html="true">
@@ -61,7 +61,7 @@
                 @endif
 
                 <div class="info-box-content">
-                    <span class="info-box-text">{{ trans('dashboard.total_profit') }}</span>
+                    <span class="info-box-text">{{ trans('dashboard.total_profit') }} [{{ date("Y")}}]</span>
                     <span class="info-box-number">@money($total_profit['total'], setting('general.default_currency'), true)</span>
 
                     <div class="progress-group" title="{{ trans('dashboard.open_profit') }}: {{ $total_profit['open'] }}<br>{{ trans('dashboard.overdue_profit') }}: {{ $total_profit['overdue'] }}" data-toggle="tooltip" data-html="true">

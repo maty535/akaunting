@@ -248,7 +248,8 @@
                 <td>
                 <img width="140"
                      height="160"
-                    src='data:image/png;base64, {{$invoice->payBySquare}}'/>
+                    src='data:image/png;base64,
+                     {{$invoice->getPayBySquare(setting("general.company_bank_iban"), setting("general.company_name"))}}'/>
                 </td>
                 <td lign="right"><img src="<?php echo
                 e(asset('public/img/stamp-'.str_replace(' ', '', setting('general.company_number')).'.png'));?>" width="233" height="153" align="right" /></td></tr>

@@ -16,6 +16,8 @@ use App\Models\Setting\Tax;
 use App\Traits\Incomes;
 use App\Transformers\Income\Invoice as Transformer;
 use Dingo\Api\Routing\Helpers;
+use PDF; // alias pre dompdf
+use Date;
 
 class Invoices extends ApiController
 {
@@ -49,6 +51,39 @@ class Invoices extends ApiController
         }
 
         return $this->response->item($invoice, new Transformer());
+    }
+    
+    public function pdf($id)
+    {
+        // Check if we're querying by id or number
+        if (is_numeric($id)) {
+            $invoice = Invoice::find($id);
+        } else {
+            $invoice = Invoice::where('invoice_number', $id)->first();
+        }
+        
+        $currency_style = true;
+
+        $view = view('incomes.invoices.invoice', compact('invoice', 'currency_style'))->render();
+        $html = mb_convert_encoding($view, 'HTML-ENTITIES');
+
+        $pdf = app('dompdf.wrapper');
+        $pdf->loadHTML($html);
+
+        //$pdf->setPaper('A4', 'portrait');
+        $company_name  = setting('general.company_name');
+        $customer_name = $invoice->customer_name;
+        $file_name = Date::parse($invoice->delivered_at)->format("Y-m-d").'-'.$invoice->invoice_number.'-'.
+            substr($company_name, 0, strpos($company_name, ' ')).'-'.
+            substr($customer_name, 0, strpos($customer_name, ' ')).'.pdf';
+
+        #$file_name = 'invoice_'.time().'.pdf';
+
+        return $pdf->download($file_name);
+        
+        //$pdf = PDF::loadView('invoices.pdf', compact('invoice'));
+
+        //return $pdf->download("invoice_{$invoice->id}.pdf");
     }
 
     /**

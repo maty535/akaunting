@@ -15,6 +15,7 @@ $api->version('v1', ['middleware' => ['api']], function($api) {
         $api->resource('invoices', 'Incomes\Invoices');
         $api->resource('invoices.payments', 'Incomes\InvoicePayments');
         $api->resource('revenues', 'Incomes\Revenues');
+        $api->get('invoices/{id}/pdf', 'Incomes\Invoices@pdf');
 
         // Expenses
         $api->resource('bills', 'Expenses\Bills');

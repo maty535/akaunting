@@ -284,13 +284,15 @@ class Dashboard extends Controller
                     // Invoices
                     $invoices = $category->invoices()->accrued()->get();
                     foreach ($invoices as $invoice) {
-                        list($paid, $open, $overdue) = $this->calculateInvoiceBillTotals($invoice, 'invoice');
+                        if($invoice->delivered_at->year == Date::today()->format('Y') ){
+                            list($paid, $open, $overdue) =
+                            $this->calculateInvoiceBillTotals($invoice,'invoice');
 
-                        $incomes_amount += $paid;
-                        $open_invoice += $open;
-                        $overdue_invoice += $overdue;
+                            $incomes_amount += $paid; $open_invoice += $open;
+                            $overdue_invoice += $overdue;
 
-                        $amount += $paid;
+                            $amount += $paid; 
+                        }
                     }
 
                     $this->addToIncomeDonut($category->color, $amount, $category->name);

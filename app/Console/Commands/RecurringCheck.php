@@ -64,14 +64,16 @@ class RecurringCheck extends Command
             $company->setSettings();
 
             foreach ($company->recurring as $recurring) {
+                $model = $recurring->recurable;
+                echo "Checking customer:".$model->customer_name.", recurId:".$recurring->id.", inv-id:".$model->id."\n"; 
+                    
                 foreach ($recurring->schedule() as $recur) {
                     $recur_date = Date::parse($recur->getStart()->format('Y-m-d'));
-                    $model = $recurring->recurable;
-                    //echo "Checking recurring: ".$recurring->id.", inv-id:".$model->id." customer:".$model->customer_name."\n"; 
+                    
                     // Check if should recur today
                     if ($this->today->ne($recur_date)) {
-                        //echo "Recur_date: .".$recur_date.", scheduled date:".$this->today->format('Y-m-d')."\n";
-                        //echo "Skip recurring:".$recurring->id."\n";
+                        //echo "Recur_date: ".$recur_date.", scheduled date:".$this->today->format('Y-m-d')."\n";
+                        echo "Skip recurring:".$recurring->id.",Recur_date:".$recur_date.", scheduledDate:".$this->today->format('Y-m-d')."\n";
                         continue;
                     }
 

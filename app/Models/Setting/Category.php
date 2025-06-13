@@ -65,6 +65,17 @@ class Category extends Model
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
+    public function scopeYear($query, $year)
+    {
+        return $query->whereRaw('YEAR(due_date)= '.$year)-get();
+    }
+    
+    /**
+     * Scope transfer category.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function scopeTransfer($query)
     {
         return $query->where('type', 'other')->pluck('id')->first();

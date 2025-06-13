@@ -38,7 +38,7 @@ return [
     |
     */
 
-    'debug' => env('APP_DEBUG', true),
+    'debug' => env('APP_DEBUG', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -51,7 +51,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL', 'https://acc.imcontec.eu'),
 
     /*
     |--------------------------------------------------------------------------
@@ -103,7 +103,7 @@ return [
     |
     */
 
-    'key' => env('APP_KEY', 'JustAKeyForAkauntingInstallation'),
+    'key' => env('APP_KEY', 'Jufdsadasffafdafasfaskasldjsaldjon'),
 
     'cipher' => env('APP_CIPHER', 'AES-256-CBC'),
 
