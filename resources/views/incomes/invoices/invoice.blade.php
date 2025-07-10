@@ -246,13 +246,13 @@
 
                 <tr>
                 <td>
-                <img width="140"
-                     height="160"
+                <img width="88"
+                     height="100"
                     src='data:image/png;base64,
                      {{$invoice->getPayBySquare(setting("general.company_bank_iban"), setting("general.company_name"))}}'/>
                 </td>
                 <td lign="right"><img src="<?php echo
-                e(asset('public/img/stamp-'.str_replace(' ', '', setting('general.company_number')).'.png'));?>" width="233" height="153" align="right" /></td></tr>
+                e(asset('public/img/stamp-'.str_replace(' ', '', setting('general.company_number')).'.png'));?>" width="150" height="100" align="right" /></td></tr>
             </table>
             @stack('signature_input_end')
     </div>

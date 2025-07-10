@@ -122,13 +122,18 @@ class RecurringCheck extends Command
 
         // Days between invoiced and due date
         $diff_days = Date::parse($clone->due_at)->diffInDays(Date::parse($clone->invoiced_at));
-
+        // day of month delivered at
+        $day_of_month   = Date::parse($clone->delivered_at)->day;
+        $deliveredAt    = clone $this->today;
+        $deliveredAt->day(min($day_of_month, $this->today->daysInMonth));
+        
         // Update dates
         $clone->invoiced_at  = $this->today->format('Y-m-d');
-        $clone->delivered_at = $this->today->format('Y-m-d');
-        $due_at = clone $this->today;
+        $clone->delivered_at = $deliveredAt->format('Y-m-d');
         
+        $due_at = clone $this->today;
         $clone->due_at = $due_at->addDays($diff_days)->format('Y-m-d');
+
         $clone->save();
 
         // Add invoice history
