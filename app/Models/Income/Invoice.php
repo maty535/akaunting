@@ -149,6 +149,17 @@ class Invoice extends Model
 
     public function onCloning($src, $child = null)
     {
+        $currentYear  = date('Y');
+        $currentMonth = date('m');
+        
+        // Days between invoiced and due date
+        $diff_days = Date::parse($this->due_at)->diffInDays(Date::parse($this->invoiced_at));
+        
+        $this->invoiced_at  = $this->invoiced_at->year($currentYear)->month($currentMonth);
+        $this->delivered_at = $this->invoiced_at->endOfMonth();
+        
+        // standardna splatnost: 14
+        $this->due_at       = $this->invoiced_at->addDays($diff_days);
         $this->invoice_status_code = 'draft';
         $this->invoice_number = $this->getNextInvoiceNumber();
     }
@@ -308,7 +319,10 @@ class Invoice extends Model
                          
                         }';
 
+        $invoiceid  = $this->invoice_number;
+        if (str_contains($this->invoice_number, '-')) {
         $invoiceid = explode("-",$this->invoice_number)[1];
+        }
         $jsonReq    = sprintf($jsonReqFmt, $iban,
                                            $invoiceid,
                                            $this->amount,

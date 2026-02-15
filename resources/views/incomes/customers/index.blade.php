@@ -39,6 +39,8 @@
                         <th class="col-md-2 hidden-xs">@sortablelink('unpaid', trans('general.unpaid'))</th>
                         <th class="col-md-1 hidden-xs">@sortablelink('enabled', trans_choice('general.statuses', 1))</th>
                         <th class="col-md-1 text-center">{{ trans('general.actions') }}</th>
+                        <th class="col-md-1">{{ trans('general.tax_number') }}</th>
+                        <th class="col-md-1">IBAN</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -82,6 +84,8 @@
                                 </ul>
                             </div>
                         </td>
+                        <td>{{ $item->tax_number }}</td>
+                        <td>{{ $item->iban }}</td>
                     </tr>
                 @endforeach
                 </tbody>

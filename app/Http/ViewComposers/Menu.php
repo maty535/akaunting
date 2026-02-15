@@ -17,6 +17,7 @@ class Menu
         $customer = null;
         $user = auth()->user();
 
+        if ($user){
         // Get all companies
         $companies = $user->companies()->enabled()->limit(10)->get()->each(function ($com) {
             $com->setSettings();
@@ -28,5 +29,6 @@ class Menu
         }
 
         $view->with(['companies' => $companies, 'customer' => $customer]);
+        }
     }
 }

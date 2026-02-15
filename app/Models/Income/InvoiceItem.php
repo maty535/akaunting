@@ -132,4 +132,27 @@ class InvoiceItem extends Model
         $this->attributes['tax'] = (double) $value;
     }
 
+    public function onCloning($src, $child = null)
+    {
+        // Získame aktuálny rok a mesiac vo formáte YYYY/MM
+        $replacement = date('Y/m');
+
+        /**
+         * Regex vysvetlenie:
+         * \d{4}    - hľadá presne 4 číslice (rok)
+         * [\/]     - hľadá lomenú zátvorku
+         * \d{2}    - hľadá presne 2 číslice (mesiac)
+         */
+        $pattern = '/\d{4}\/\d{2}/';
+
+        // Vykonáme nahradenie v názve položky
+        if (!empty($this->name)) {
+            $this->name = preg_replace($pattern, $replacement, $this->name);
+        }
+
+        // Voliteľne: ak máš tento formát aj v popise, odkomentuj riadok nižšie
+        // if (!empty($this->description)) {
+        //    $this->description = preg_replace($pattern, $replacement, $this->description);
+        // }
+    }
 }
